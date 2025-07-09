@@ -1,0 +1,96 @@
+{
+    "name": "pRFHrf",
+    "description": "HCP 7T retinotopy pRF model with HRF estimation (based on SamSrf)",
+    
+    "model_type": "gaussian_hrf",
+    "n_params": 3,
+    
+    "parameters": {
+      "polar_angle": {
+        "description": "Polar angle (degrees)",
+        "bounds": [0, 360],
+        "initial_guess": 0,
+        "grid_search": true,
+        "grid_values": [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200, 210, 220, 230, 240, 250, 260, 270, 280, 290, 300, 310, 320, 330, 340, 350],
+        "polar_coordinate": true
+      },
+      "eccentricity": {
+        "description": "Eccentricity (degrees of visual angle)",
+        "bounds": [0.25, 5.09], 
+        "initial_guess": 1,
+        "grid_search": true,
+        "grid_values": [0.25, 0.30, 0.36, 0.43, 0.52, 0.62, 0.74, 0.89, 1.07, 1.28, 1.54, 1.85, 2.22, 2.67, 3.20, 3.85, 4.62, 5.09],
+        "polar_coordinate": true,
+        "scaling_factor": 8
+      },
+      "sigma": {
+        "description": "pRF size (degrees of visual angle)",
+        "bounds": [0.13, 2.0],
+        "initial_guess": 0.5,
+        "grid_search": true,
+        "grid_values": [0.13, 0.15, 0.18, 0.22, 0.26, 0.31, 0.37, 0.45, 0.54, 0.65, 0.78, 0.93, 1.12, 1.34, 1.61, 2.0],
+        "scaling_factor": 8
+      }
+    },
+    
+    "fitting": {
+      "method": "grid_search_then_optimize",
+      "optimizer": "minimize",
+      "optimizer_method": "L-BFGS-B",
+      "max_iterations": 1000,
+      "tolerance": 1e-6,
+      "parallel_grid": true,
+      "polar_search_space": true,
+      "hrf_estimation": "fine_fit"
+    },
+    
+    "preprocessing": {
+      "detrend": true,
+      "detrend_type": "linear",
+      "zscore": true,
+      "temporal_filter": null,
+      "average_runs": true,
+      "run_combination": "mean"
+    },
+    
+    "stimulus": {
+      "field_size": 8,
+      "pixels_per_degree": null,
+      "aperture_file": "aps_retbars",
+      "stimulus_type": "bars",
+      "TR": 1.0,
+      "stimulus_duration": null,
+      "scaling_factor": 8
+    },
+    
+    "hrf": {
+      "type": "estimated",
+      "variant": "flexible",
+      "TR": 1.0,
+      "estimate_in_fit": true,
+      "canonical_initial": true
+    },
+    
+    "quality_control": {
+      "min_r_squared": 0.05,
+      "max_eccentricity": 8.0,
+      "min_sigma": 0.1,
+      "max_sigma": 8.0,
+      "no_negative_sigma": true
+    },
+    
+    "noise_ceiling": {
+      "calculate": true,
+      "method": "split_half_correlation",
+      "runs_to_split": ["RETBAR1", "RETBAR2"]
+    },
+    
+    "output": {
+      "save_residuals": false,
+      "save_predictions": false,
+      "save_goodness_of_fit": true,
+      "save_noise_ceiling": true,
+      "parameter_maps": ["polar_angle", "eccentricity", "sigma", "r_squared", "x0", "y0"],
+      "export_format": "gifti"
+    }
+  }

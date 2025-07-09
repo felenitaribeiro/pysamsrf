@@ -172,9 +172,11 @@ def _load_gifti(filepath: Path, load_data: bool = True) -> SrfData:
             # Time series data
             if load_data:
                 if srf.y is None:
-                    srf.y = darray.data.T  # Transpose to (vertices, timepoints)
+                    srf.y = np.reshape(darray.data.T,(-1,1))  # Transpose to (vertices, timepoints)
                 else:
-                    srf.y = np.concatenate([srf.y, darray.data.T], axis=1)
+                    print(srf.y.shape)
+                    print(darray.data.T.shape)
+                    srf.y = np.concatenate([srf.y, np.reshape(darray.data.T, (-1,1))], axis=1)
                     
         elif intent == nib.nifti1.intent_codes['NIFTI_INTENT_ESTIMATE']:
             # Parameter estimates
